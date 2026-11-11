@@ -68,7 +68,9 @@ export default async function DashboardPage() {
               <p className="mt-1 text-sm text-[#A5A5C0]">
                 {READINESS.done} of {READINESS.total} checks complete. Close the gaps to make your next chapter effortless.
               </p>
-              <span className="mt-3 inline-block text-sm text-[#A5A5C0]/60">Review your handover → (coming soon)</span>
+              <Link href="/brief" className="mt-3 inline-block text-sm text-[#C4B5FD] hover:underline">
+                Review your handover &rarr;
+              </Link>
             </div>
           </div>
           <p className="mt-5 border-t border-white/10 pt-4 text-sm text-[#A5A5C0]">
@@ -99,4 +101,36 @@ export default async function DashboardPage() {
                   {n.href ? (
                     <Link href={n.href} className="flex min-h-12 items-center justify-between gap-3 hover:text-[#C4B5FD]">{inner}</Link>
                   ) : (
-                    <div className="flex min-h-12 items-center justify-between
+                    <div className="flex min-h-12 items-center justify-between gap-3">{inner}</div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      <section className="mt-4">
+        <div className={`${card} p-6`}>
+          <h2 className="font-semibold">Recent activity</h2>
+          <ul className="mt-4 divide-y divide-white/10">
+            {ACTIVITY.map((a, i) => (
+              <li key={i} className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <Avatar name={a.who} size={32} />
+                  <div>
+                    <p className="text-sm">
+                      <span className="font-medium text-[#F4F4FA]">{a.who}</span>{" "}
+                      <span className="text-[#A5A5C0]">{a.what}</span>
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-[#A5A5C0]">{a.when}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </AppShell>
+  );
+}

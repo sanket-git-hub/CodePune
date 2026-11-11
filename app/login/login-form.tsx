@@ -1,87 +1,57 @@
-Claude
+"use client";
 
+import { useActionState } from "react";
+import { loginAction } from "./actions";
 
+const input =
+  "mt-1 h-11 w-full rounded-lg border border-white/10 bg-[#12121F] px-3 text-sm text-[#F4F4FA] outline-none focus:ring-2 focus:ring-[#6366F1]";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Actions · TS
-"use server";
- 
-import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
-import { z } from "zod";
-import { pool } from "@/lib/db";
-import { signIn } from "@/auth";
- 
-const registerSchema = z.object({
-  name: z.string().trim().min(2, "Name is too short").max(80, "Name is too long"),
-  email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
-  // bcrypt only uses the first 72 bytes, so cap the length.
-  password: z.string().min(8, "Use at least 8 characters").max(72, "Use at most 72 characters"),
-});
- 
-export async function registerAction(
-  _prev: { error?: string },
-  formData: FormData
-): Promise<{ error?: string }> {
-  const parsed = registerSchema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-  });
-  if (!parsed.success) return { error: parsed.error.issues[0].message };
- 
-  const { name, email, password } = parsed.data;
-  const hash = await bcrypt.hash(password, 10);
- 
-  // Role is fixed here. Nothing from the form can set it, so nobody can self-register as admin.
-  const result = await pool.query(
-    `INSERT INTO users (name, email, password_hash, role)
-     VALUES ($1, $2, $3, 'incoming')
-     ON CONFLICT (email) DO NOTHING
-     RETURNING id`,
-    [name, email, hash]
+export function LoginForm() {
+  const [state, action, pending] = useActionState(
+    loginAction,
+    {} as { error?: string },
   );
-  if (result.rowCount === 0) {
-    return { error: "Could not create that account. Try signing in instead." };
-  }
- 
-  try {
-    await signIn("credentials", { email, password, redirectTo: "/dashboard" });
-  } catch (e) {
-    if (e instanceof AuthError) return { error: "Account created. Please sign in." };
-    throw e;
-  }
-  return {};
+
+  return (
+    <form action={action} className="space-y-4">
+      <div>
+        <label htmlFor="email" className="text-sm text-[#A5A5C0]">
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          className={input}
+        />
+      </div>
+      <div>
+        <label htmlFor="password" className="text-sm text-[#A5A5C0]">
+          Password
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          required
+          className={input}
+        />
+      </div>
+      {state.error && (
+        <p role="alert" className="text-sm text-[#F43F5E]">
+          {state.error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={pending}
+        className="h-11 w-full rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-sm font-medium text-white disabled:opacity-60"
+      >
+        {pending ? "Signing in…" : "Sign in"}
+      </button>
+    </form>
+  );
 }
- 

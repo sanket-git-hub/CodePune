@@ -1,8 +1,7 @@
-
 import type { DefaultSession } from "next-auth";
- 
+
 export type Role = "admin" | "reviewer" | "leaver" | "incoming" | "outsider";
- 
+
 declare module "next-auth" {
   interface User {
     role?: Role;
@@ -14,12 +13,10 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 }
- 
+
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: Role;
   }
 }
- 
-Claude finished the response

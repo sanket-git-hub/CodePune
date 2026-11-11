@@ -71,21 +71,21 @@ const ITEMS: Item[] = [
     short: "Risks",
     href: "/risks",
     icon: AlertTriangle,
-    ready: false,
+    ready: true,
   },
   {
     label: "Handover brief",
     short: "Brief",
     href: "/brief",
     icon: FileText,
-    ready: false,
+    ready: true,
   },
   {
     label: "Ask Baton",
     short: "Ask",
     href: "/ask",
     icon: MessageSquare,
-    ready: false,
+    ready: true,
   },
 ];
 

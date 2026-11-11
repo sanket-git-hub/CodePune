@@ -36,8 +36,8 @@ export const NEEDS_ATTENTION: {
     tone: "warn",
     href: "/decisions",
   },
-  { text: "2 tasks are blocked", tone: "warn" },
-  { text: "Payments has no backup owner", tone: "danger" },
+  { text: "2 tasks are blocked", tone: "warn", href: "/work" },
+  { text: "Payments has no backup owner", tone: "danger", href: "/risks" },
 ];
 
 export const ACTIVITY = [

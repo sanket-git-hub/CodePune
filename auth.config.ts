@@ -1,19 +1,23 @@
-import Link from "next/link";
-import { RegisterForm } from "./register-form";
+import type { NextAuthConfig } from "next-auth";
 
-export default function RegisterPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0B0B14] p-4">
-      <div className="w-full max-w-sm space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#F4F4FA]">Create account</h1>
-          <p className="mt-1 text-sm text-[#A5A5C0]">New accounts start as an incoming team member.</p>
-        </div>
-        <RegisterForm />
-        <p className="text-sm text-[#A5A5C0]">
-          Already registered? <Link href="/login" className="text-[#8B5CF6] underline">Sign in</Link>
-        </p>
-      </div>
-    </main>
-  );
-}
+// Edge-safe config: no database or bcrypt imports here, because middleware.ts uses it.
+export const authConfig = {
+  pages: { signIn: "/login" },
+  providers: [], // real providers are added in auth.ts
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const path = nextUrl.pathname;
+      const loggedIn = !!auth?.user;
+      const isPublic =
+        path === "/" || path === "/login" || path === "/register";
+
+      if (isPublic) {
+        if (loggedIn && path !== "/") {
+          return Response.redirect(new URL("/dashboard", nextUrl));
+        }
+        return true;
+      }
+      return loggedIn; // false sends the visitor to /login
+    },
+  },
+} satisfies NextAuthConfig;
