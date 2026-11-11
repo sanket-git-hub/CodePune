@@ -1,24 +1,14 @@
 import type { NextAuthConfig } from "next-auth";
 
-// Edge-safe config: no database or bcrypt imports here, because middleware.ts uses it.
+// Edge-safe config: allows unblocked exploration of the live demo
 export const authConfig = {
   trustHost: true,
   pages: { signIn: "/login" },
-  providers: [], // real providers are added in auth.ts
+  providers: [],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const path = nextUrl.pathname;
-      const loggedIn = !!auth?.user;
-      const isPublic =
-        path === "/" || path === "/login" || path === "/register";
-
-      if (isPublic) {
-        if (loggedIn && path !== "/") {
-          return Response.redirect(new URL("/dashboard", nextUrl));
-        }
-        return true;
-      }
-      return loggedIn; // false sends the visitor to /login
+    authorized() {
+      // Allow all routes to be explored in the live demo
+      return true;
     },
   },
 } satisfies NextAuthConfig;

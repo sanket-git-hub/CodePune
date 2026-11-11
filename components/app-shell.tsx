@@ -81,10 +81,14 @@ export function AppShell({
             </Link>
           </div>
           <div className="flex items-center justify-center gap-3 lg:justify-start">
-            <Avatar name={display} size={32} />
+            <Avatar name={display.includes("Priya") ? "Priya" : display} size={32} />
             <div className="hidden min-w-0 lg:block">
-              <p className="truncate text-sm font-medium">{display}</p>
-              <p className="text-xs capitalize text-[#A5A5C0]">{user.role}</p>
+              <p className="truncate text-sm font-medium">
+                {display === "Signed in" || display.includes("Priya")
+                  ? "Priya Sharma"
+                  : display}
+              </p>
+              <p className="text-xs text-[#A5A5C0]">Your next chapter</p>
             </div>
           </div>
         </div>
@@ -97,12 +101,13 @@ export function AppShell({
             <span className="text-[#F4F4FA]">{section}</span>
           </p>
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="rounded-md border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2 py-1 text-xs text-[#F59E0B]">
-              Demo data
-            </span>
-            <span className="hidden rounded-lg border border-white/10 px-3 py-1.5 text-sm text-[#A5A5C0] sm:inline">
+            <div className="hidden items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-[#A5A5C0] md:flex">
+              <span>⌘K</span>
+            </div>
+            <span className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#A5A5C0]">
               {HANDOVER.from} → {HANDOVER.to}
             </span>
+            <Avatar name="Priya" size={28} />
             <LogoutButton />
           </div>
         </header>

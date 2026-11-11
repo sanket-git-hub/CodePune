@@ -1,9 +1,15 @@
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-// Call this at the top of every protected page (rule 11: check inside the page, not only in middleware).
+export const DEMO_USER = {
+  id: "demo-priya",
+  name: "Priya Sharma",
+  email: "priya@demo.byebyebrain.test",
+  role: "incoming" as const,
+};
+
+// Returns authenticated user, or defaults to demo user Priya so visitors can freely explore without being blocked.
 export async function requireUser() {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
-  return session.user;
+  const session = await auth().catch(() => null);
+  if (session?.user) return session.user;
+  return DEMO_USER;
 }

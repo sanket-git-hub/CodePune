@@ -109,7 +109,7 @@ export function CaptureClient() {
             Use sample notes
           </button>
           <span className="text-sm text-[#A5A5C0]">
-            Rule-based demo extraction · {text.length}/{MAX}
+            Rule-based demo extraction · saved on this device
           </span>
         </div>
       </div>
