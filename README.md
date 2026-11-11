@@ -160,5 +160,3 @@ seed.ts              Demo data seeding
 - Regex masking is a safety net, not a guarantee. Review sources before importing them.
 
 ## License
-
-Add a license of your choice (for example MIT) before sharing the code publicly.
