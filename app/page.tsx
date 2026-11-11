@@ -11,7 +11,7 @@ import {
 import { auth } from "@/auth";
 
 export default async function HomePage() {
-  const session = await auth();
+  const session = await auth().catch(() => null);
 
   return (
     <div className="min-h-screen bg-[#0B0B14] text-[#F4F4FA]">
