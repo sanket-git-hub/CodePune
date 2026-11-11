@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 
 // Edge-safe config: no database or bcrypt imports here, because middleware.ts uses it.
 export const authConfig = {
+  trustHost: true,
   pages: { signIn: "/login" },
   providers: [], // real providers are added in auth.ts
   callbacks: {
