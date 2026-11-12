@@ -31,3 +31,4 @@ dist-ssr
 *.sw?
 ################3
 .env.local
+.env.example
