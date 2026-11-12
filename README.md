@@ -159,6 +159,3 @@ seed.ts              Demo data seeding
 - Turn `ENABLE_DEMO_LOGIN` off once real data is stored.
 - Regex masking is a safety net, not a guarantee. Review sources before importing them.
 
-## License
-
-Add a license of your choice (for example MIT) before sharing the code publicly.
