@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronDown, Sparkles, Layers, Plus } from "lucide-react";
+import { ArrowRight, ChevronDown, Check, ShieldCheck, Lock, FileText, User, AlertTriangle } from "lucide-react";
 
-function BatonLogo() {
+function Logo() {
   return (
     <div className="flex items-center gap-2">
       <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true">
@@ -28,323 +27,309 @@ function BatonLogo() {
         />
       </svg>
       <span className="text-xl font-semibold tracking-tight text-white">
-        Baton<span className="text-[#8B5CF6]">.</span>
+        ByeByeBrain<span className="text-[#8B5CF6]">.</span>
       </span>
     </div>
   );
 }
 
-const FAQS = [
-  {
-    q: "Do I need an account?",
-    a: "No login. No setup. Open the demo and explore a pre-filled project.",
-  },
-  {
-    q: "Where is my knowledge saved?",
-    a: "Demo decisions, work, and risks are saved on this device. They are not synced to a server.",
-  },
-  {
-    q: "Does Baton use live AI?",
-    a: "This prototype uses local, rule-based extraction and keyword-matched answers. Review captured items before saving.",
-  },
-];
-
-const TEAMS = [
-  "Product & engineering",
-  "Customer success",
-  "Operations",
-  "Growing teams",
-];
-
 export function HomeClient() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [activeTeam, setActiveTeam] = useState<string>("Product & engineering");
-  const [activeTab, setActiveTab] = useState<"overview" | "story" | "risks">("overview");
-
   return (
-    <div className="min-h-screen bg-[#07070D] text-[#F4F4FA]">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#07070D]/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <BatonLogo />
+    <div className="min-h-screen bg-[#07070D] font-sans text-[#F4F4FA]">
+      {/* 1. Navbar */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07070D]">
+        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
+          <Logo />
 
           <nav className="hidden items-center gap-8 text-sm text-[#A5A5C0] md:flex">
-            <a href="#how-it-works" className="transition hover:text-white">
+            <a href="#how-it-works" className="hover:text-white focus-visible:outline-2 focus-visible:outline-[#6366F1]">
               How it works
             </a>
-            <Link href="/story" className="transition hover:text-white">
-              The story
-            </Link>
-            <Link href="/dashboard" className="transition hover:text-white">
-              Explore demo
+            <Link href="/dashboard" className="hover:text-white focus-visible:outline-2 focus-visible:outline-[#6366F1]">
+              Demo
             </Link>
           </nav>
 
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex h-9 items-center gap-2 rounded-lg bg-[#6366F1] px-4 text-xs font-semibold text-white shadow-md shadow-[#6366F1]/25 transition hover:bg-[#5558E6]"
+              className="inline-flex h-9 items-center rounded-lg bg-[#6366F1] px-4 text-xs font-semibold text-white hover:bg-[#5558E6] focus-visible:outline-2 focus-visible:outline-[#6366F1]"
             >
-              Try demo &rarr;
+              Try the demo
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex h-9 items-center rounded-lg border border-white/15 bg-white/5 px-4 text-xs font-semibold text-[#F4F4FA] hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-[#6366F1]"
+            >
+              Create account
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden px-6 pt-16 pb-20 text-center md:pt-24 md:pb-28">
+      {/* 2. Hero */}
+      <section className="px-6 pt-16 pb-16 text-center md:pt-24 md:pb-20">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#6366F1]/30 bg-[#6366F1]/10 px-3.5 py-1 text-xs font-medium text-[#C4B5FD]">
-            <span>✦ A better way to pass the baton</span>
-            <span className="text-white/40">·</span>
-            <span>Meet Baton &rarr;</span>
-          </div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[#C4B5FD]">
+            A better way to pass the baton
+          </p>
 
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl md:text-7xl md:leading-[1.12]">
+          <h1 className="font-serif text-4xl font-normal tracking-tight sm:text-6xl md:text-7xl md:leading-[1.15]">
             When someone leaves, <br />
-            the knowledge{" "}
-            <span className="text-[#8B5CF6]">shouldn’t.</span>
+            the knowledge <span className="italic text-[#8B5CF6]">shouldn’t.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-base text-[#A5A5C0] sm:text-lg">
-            Decisions, ownership, and all the little things in between. Baton
-            keeps your team’s context connected — so the next person picks up in
-            minutes, not months.
+            Keep decisions, ownership, and risks connected so the next person picks up in minutes, not months.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/dashboard"
-              className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-6 text-sm font-semibold text-white shadow-lg shadow-[#6366F1]/30 transition hover:opacity-95"
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#6366F1] px-6 text-sm font-semibold text-white hover:bg-[#5558E6] focus-visible:outline-2 focus-visible:outline-[#6366F1]"
             >
-              Try the live demo &rarr;
+              Try the demo &rarr;
             </Link>
             <Link
-              href="/capture"
-              className="inline-flex h-12 items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 text-sm font-semibold text-[#F4F4FA] transition hover:bg-white/10"
+              href="/register"
+              className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 text-sm font-semibold text-[#F4F4FA] hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-[#6366F1]"
             >
-              Start a project <Plus size={16} />
+              Create account
             </Link>
           </div>
 
           <p className="mt-4 text-xs text-[#A5A5C0]">
-            ✓ No login. No setup. Just a smoother handover.
+            One-click demo accounts. No setup.
           </p>
         </div>
 
-        {/* Interactive App Mockup Preview */}
-        <div className="mx-auto mt-14 max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-[#0E0E1A] p-2 shadow-2xl shadow-[#6366F1]/10">
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        {/* 3. Static Product Mockup Card */}
+        <div className="mx-auto mt-12 max-w-5xl rounded-xl border border-white/10 bg-[#0E0E1A] p-4 text-left sm:p-6">
+          <div className="flex flex-wrap items-center justify-between border-b border-white/10 pb-4">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-[#F43F5E]/60" />
               <span className="h-3 w-3 rounded-full bg-[#F59E0B]/60" />
               <span className="h-3 w-3 rounded-full bg-[#10B981]/60" />
-              <span className="ml-2 text-xs text-[#A5A5C0]">Orbit workspace · Baton preview</span>
+              <span className="ml-2 text-xs text-[#A5A5C0]">Campus Pay · Baton Overview</span>
             </div>
-            <div className="flex gap-1.5 text-xs">
-              {(["overview", "story", "risks"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setActiveTab(t)}
-                  className={`rounded-md px-2.5 py-1 capitalize transition ${
-                    activeTab === t
-                      ? "bg-[#6366F1] text-white"
-                      : "text-[#A5A5C0] hover:text-white"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+            <span className="rounded-md border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2 py-0.5 text-xs font-medium text-[#F59E0B]">
+              Sample illustration
+            </span>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4">
+              <div className="flex items-center justify-between text-xs text-[#A5A5C0]">
+                <span>Decisions</span>
+                <FileText size={14} />
+              </div>
+              <p className="mt-2 text-2xl font-bold">24</p>
+              <p className="mt-1 text-xs text-[#A5A5C0]">Captured & connected</p>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4">
+              <div className="flex items-center justify-between text-xs text-[#A5A5C0]">
+                <span>Open work</span>
+                <Check size={14} />
+              </div>
+              <p className="mt-2 text-2xl font-bold">12</p>
+              <p className="mt-1 text-xs text-[#A5A5C0]">In flight & backlog</p>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4">
+              <div className="flex items-center justify-between text-xs text-[#A5A5C0]">
+                <span>Risks</span>
+                <AlertTriangle size={14} />
+              </div>
+              <p className="mt-2 text-2xl font-bold text-[#FB7185]">5</p>
+              <p className="mt-1 text-xs text-[#FB7185]">2 need attention</p>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4">
+              <div className="flex items-center justify-between text-xs text-[#A5A5C0]">
+                <span>Owners</span>
+                <User size={14} />
+              </div>
+              <p className="mt-2 text-2xl font-bold">4</p>
+              <p className="mt-1 text-xs text-[#A5A5C0]">Key teammates</p>
             </div>
           </div>
 
-          <div className="p-6 text-left">
-            {activeTab === "overview" && (
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/10 bg-[#12121F] p-4">
-                  <p className="text-xs text-[#A5A5C0]">Decisions preserved</p>
-                  <p className="mt-2 text-3xl font-bold">24</p>
-                  <p className="mt-1 text-xs text-[#8B5CF6]">The why behind the work</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-[#12121F] p-4">
-                  <p className="text-xs text-[#A5A5C0]">Handover readiness</p>
-                  <p className="mt-2 text-3xl font-bold text-[#34D399]">72%</p>
-                  <p className="mt-1 text-xs text-[#A5A5C0]">18 of 25 checks complete</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-[#12121F] p-4">
-                  <p className="text-xs text-[#A5A5C0]">Needs attention</p>
-                  <p className="mt-2 text-3xl font-bold text-[#F59E0B]">2 gaps</p>
-                  <p className="mt-1 text-xs text-[#FB7185]">Payments has no backup owner</p>
-                </div>
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4 text-xs">
+              <p className="font-semibold text-white">Handover Status: Campus Pay</p>
+              <p className="mt-1 text-[#A5A5C0]">Leaver: Riya &rarr; Incoming: Arjun</p>
+              <div className="mt-3 rounded border border-white/5 bg-[#0B0B14] p-3 text-[#A5A5C0]">
+                Approved handovers give Arjun immediate visibility into all public and engineering claims.
               </div>
-            )}
-
-            {activeTab === "story" && (
-              <div className="space-y-3">
-                <div className="rounded-xl border border-white/10 bg-[#12121F] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#A78BFA]">Chapter 02 · March</p>
-                  <p className="mt-1 font-semibold text-white">The great gateway debate</p>
-                  <p className="mt-1 text-xs text-[#A5A5C0]">Aarav chose Stripe over Razorpay: better docs, faster onboarding.</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-[#12121F] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#F5A84B]">Plot twist · June</p>
-                  <p className="mt-1 font-semibold text-white">Forty orders. One silent failure.</p>
-                  <p className="mt-1 text-xs text-[#A5A5C0]">Webhook silently dropped 40 orders. Added retry logic, alerting still needed.</p>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "risks" && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between rounded-xl border border-[#F43F5E]/30 bg-[#F43F5E]/10 p-3 text-xs">
-                  <span className="font-semibold text-[#FB7185]">● High: Webhook failures can go unnoticed</span>
-                  <span className="text-[#A5A5C0]">Payments &middot; Aarav</span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl border border-[#F43F5E]/30 bg-[#F43F5E]/10 p-3 text-xs">
-                  <span className="font-semibold text-[#FB7185]">● High: Payments has no backup owner</span>
-                  <span className="text-[#A5A5C0]">Ownership &middot; Aarav</span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/10 p-3 text-xs">
-                  <span className="font-semibold text-[#F59E0B]">● Medium: Refund launch blocked by legal</span>
-                  <span className="text-[#A5A5C0]">Billing &middot; Zoya</span>
-                </div>
-              </div>
-            )}
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#12121F] p-4 text-xs">
+              <p className="font-semibold text-[#F59E0B]">Needs attention</p>
+              <ul className="mt-2 space-y-1.5 text-[#A5A5C0]">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#F43F5E]" />
+                  Payments has no backup owner
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
+                  Refund launch blocked by legal
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Quotes Ticker */}
-        <div className="mt-14 border-y border-white/5 py-4 text-xs text-[#A5A5C0]/80">
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            <span>&ldquo;Why, not just the what.&rdquo;</span>
-            <span className="text-white/20">&bull;</span>
-            <span>&ldquo;Pass the work, not the confusion.&rdquo;</span>
-            <span className="text-white/20">&bull;</span>
-            <span>&ldquo;A handover should be a conversation, not a scavenger hunt.&rdquo;</span>
+        {/* 4. Static Quote Row (3 Quotes) */}
+        <div className="mx-auto mt-16 max-w-5xl border-y border-white/10 py-8">
+          <div className="grid gap-6 text-center sm:grid-cols-3">
+            <div className="p-3">
+              <p className="font-serif italic text-sm text-[#E2E8F0] sm:text-base">
+                &ldquo;Document the why, not just the what.&rdquo;
+              </p>
+            </div>
+            <div className="border-t border-white/5 p-3 sm:border-t-0 sm:border-l sm:border-white/10">
+              <p className="font-serif italic text-sm text-[#E2E8F0] sm:text-base">
+                &ldquo;Pass the work, not the confusion.&rdquo;
+              </p>
+            </div>
+            <div className="border-t border-white/5 p-3 sm:border-t-0 sm:border-l sm:border-white/10">
+              <p className="font-serif italic text-sm text-[#E2E8F0] sm:text-base">
+                &ldquo;A handover should be a conversation, not a scavenger hunt.&rdquo;
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Target Audience Tabs */}
-      <section className="border-t border-white/5 py-16 text-center">
+      {/* 5. Target Audience Section */}
+      <section className="border-b border-white/10 py-12 text-center">
         <p className="text-xs font-semibold uppercase tracking-widest text-[#A5A5C0]">
-          Built for the teams that keep things moving
+          BUILT FOR THE TEAMS THAT KEEP THINGS MOVING
         </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-3 px-4">
-          {TEAMS.map((team) => (
-            <button
-              key={team}
-              type="button"
-              onClick={() => setActiveTeam(team)}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition ${
-                activeTeam === team
-                  ? "border border-[#6366F1]/50 bg-[#6366F1]/15 text-white"
-                  : "border border-white/10 bg-white/[0.02] text-[#A5A5C0] hover:text-white"
-              }`}
+          {[
+            "Product and engineering",
+            "Customer success",
+            "Operations",
+            "Growing teams",
+          ].map((label) => (
+            <span
+              key={label}
+              className="rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 text-xs font-medium text-[#D1D1E6]"
             >
-              {team}
-            </button>
+              {label}
+            </span>
           ))}
         </div>
       </section>
 
-      {/* Feature Cards Section (01 / 02) */}
-      <section id="how-it-works" className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#8B5CF6]">
-              Less chasing. More clarity.
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-              A handover, not a scavenger hunt.
-            </h2>
-          </div>
-          <p className="max-w-md text-sm text-[#A5A5C0]">
-            From &ldquo;it’s all in my head&rdquo; to &ldquo;you’ve got this.&rdquo;
-            Keep the why with the work, every step of the way.
+      {/* 6. A handover, not a scavenger hunt (3 Alternating Rows) */}
+      <section id="how-it-works" className="mx-auto max-w-[1200px] px-6 py-16">
+        <div className="border-b border-white/10 pb-6 text-center md:text-left">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#8B5CF6]">
+            Clear step-by-step
           </p>
+          <h2 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">
+            A handover, not a scavenger hunt.
+          </h2>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {/* Card 01 */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 transition hover:border-[#6366F1]/40">
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-[#8B5CF6]/30 bg-[#8B5CF6]/10 px-2.5 py-1 text-xs font-semibold text-[#C4B5FD]">
-              ✦ 01 / CAPTURE
-            </span>
-            <h3 className="mt-4 text-xl font-bold text-white">
-              Your brain-dump. Beautifully organized.
-            </h3>
-            <p className="mt-2 text-sm text-[#A5A5C0]">
-              Paste notes, a Slack thread, or the things you’ve been meaning to
-              write down. Find the knowledge hiding in the noise.
-            </p>
-
-            <div className="mt-6 rounded-xl border border-white/10 bg-[#0B0B14] p-4 text-xs italic text-[#D1D1E6]">
-              &ldquo;We went with Stripe for the better docs. Aarav owns payments.
-              Refunds are blocked on legal. Don’t forget the webhook
-              monitoring...&rdquo;
+        <div className="mt-12 space-y-12">
+          {/* Row 01 */}
+          <div className="grid items-center gap-8 rounded-xl border border-white/10 bg-white/[0.02] p-6 md:grid-cols-2 lg:p-8">
+            <div>
+              <span className="inline-block rounded-md border border-[#8B5CF6]/30 bg-[#8B5CF6]/10 px-2.5 py-1 text-xs font-semibold text-[#C4B5FD]">
+                01 / IMPORT
+              </span>
+              <h3 className="mt-4 font-serif text-2xl font-semibold text-white">
+                Your notes. Turned into claims.
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+                Import plain text, CSV or meeting notes. Secrets, emails, and phone numbers are automatically masked before any processing. Claims are extracted with exact verbatim source excerpts so every statement is backed by evidence.
+              </p>
             </div>
-
-            <div className="mt-6 flex items-center gap-2 text-xs text-[#A5A5C0]">
-              <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">1 decision</span>
-              <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">1 owner</span>
-              <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1">2 next steps</span>
+            <div className="rounded-lg border border-white/10 bg-[#0B0B14] p-5 text-xs">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3 text-[#A5A5C0]">
+                <span>Source: Eng design note</span>
+                <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-[#34D399]">Screened & masked</span>
+              </div>
+              <p className="mt-3 font-mono text-[11px] text-[#A5A5C0]">
+                &ldquo;We chose Stripe over Razorpay and PayU because of better documentation...&rdquo;
+              </p>
+              <div className="mt-4 rounded border border-[#6366F1]/30 bg-[#6366F1]/10 p-3 text-[#C4B5FD]">
+                <p className="font-semibold text-white">Extracted Claim (decision)</p>
+                <p className="mt-1">Stripe selected for primary payment gateway</p>
+              </div>
             </div>
           </div>
 
-          {/* Card 02 */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 transition hover:border-[#6366F1]/40">
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-[#6366F1]/30 bg-[#6366F1]/10 px-2.5 py-1 text-xs font-semibold text-[#C4B5FD]">
-              ⊞ 02 / CONNECT
-            </span>
-            <h3 className="mt-4 text-xl font-bold text-white">
-              Nothing lives in isolation.
-            </h3>
-            <p className="mt-2 text-sm text-[#A5A5C0]">
-              Connect every decision to its owner, every risk to a next step. The
-              whole picture, finally in one place.
-            </p>
-
-            <div className="mt-8 flex items-center justify-between rounded-xl border border-white/10 bg-[#0B0B14] p-4 text-xs">
-              <span className="rounded-lg border border-[#8B5CF6]/30 bg-[#8B5CF6]/10 px-3 py-1.5 font-medium text-[#C4B5FD]">
-                Decision
-              </span>
-              <span className="text-[#A5A5C0]">&rarr;</span>
-              <span className="rounded-lg border border-[#10B981]/30 bg-[#10B981]/10 px-3 py-1.5 font-medium text-[#34D399]">
-                Owner
-              </span>
-              <span className="text-[#A5A5C0]">&rarr;</span>
-              <span className="rounded-lg border border-[#6366F1]/30 bg-[#6366F1]/10 px-3 py-1.5 font-medium text-white">
-                Handover
-              </span>
+          {/* Row 02 */}
+          <div className="grid items-center gap-8 rounded-xl border border-white/10 bg-white/[0.02] p-6 md:grid-cols-2 lg:p-8">
+            <div className="order-2 md:order-1 rounded-lg border border-white/10 bg-[#0B0B14] p-5 text-xs">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <span className="font-semibold text-white">Claim #42: Stripe Decision</span>
+                <span className="rounded bg-[#10B981]/15 px-2 py-0.5 text-[10px] font-medium text-[#34D399]">Verified</span>
+              </div>
+              <div className="mt-3 space-y-2 text-[#A5A5C0]">
+                <p><strong className="text-white">Owner:</strong> Aarav (Primary) · Priya (Incoming)</p>
+                <p><strong className="text-white">Clearance:</strong> <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px]">eng</span></p>
+                <p><strong className="text-white">Integrity:</strong> Exact substring match verified</p>
+              </div>
             </div>
+            <div className="order-1 md:order-2">
+              <span className="inline-block rounded-md border border-[#6366F1]/30 bg-[#6366F1]/10 px-2.5 py-1 text-xs font-semibold text-[#C4B5FD]">
+                02 / CONNECT
+              </span>
+              <h3 className="mt-4 font-serif text-2xl font-semibold text-white">
+                Nothing lives in isolation.
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+                Every claim is linked directly to its source chunk, owner, access tag, and review status. Human reviewers edit, approve, or reject claims before anything is exposed.
+              </p>
+            </div>
+          </div>
 
-            <p className="mt-6 text-xs text-[#A5A5C0]">
-              Map dependencies before they break in production.
-            </p>
+          {/* Row 03 */}
+          <div className="grid items-center gap-8 rounded-xl border border-white/10 bg-white/[0.02] p-6 md:grid-cols-2 lg:p-8">
+            <div>
+              <span className="inline-block rounded-md border border-[#10B981]/30 bg-[#10B981]/10 px-2.5 py-1 text-xs font-semibold text-[#34D399]">
+                03 / HAND OVER
+              </span>
+              <h3 className="mt-4 font-serif text-2xl font-semibold text-white">
+                Leave the context. Not the confusion.
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+                Once a handover is approved by a reviewer, the incoming person gains a clean, role-filtered view of everything they are authorized to read, with an explicit count of items hidden by clearance.
+              </p>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-[#0B0B14] p-5 text-xs">
+              <div className="rounded border border-[#10B981]/30 bg-[#10B981]/10 p-3 text-[#34D399]">
+                ✓ Handover approved · Ready for incoming signoff
+              </div>
+              <div className="mt-3 flex items-center justify-between text-[#A5A5C0]">
+                <span>Showing 18 approved claims</span>
+                <span className="rounded bg-white/5 px-2 py-0.5 text-[10px]">2 confidential items hidden</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3 Benefit Columns */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-8 sm:grid-cols-3">
-          <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-6 text-center sm:text-left">
-            <h3 className="text-2xl font-bold text-white">Less guesswork.</h3>
+      {/* 7. Three Outcome Cards */}
+      <section className="mx-auto max-w-[1200px] px-6 py-12">
+        <div className="grid gap-6 sm:grid-cols-3">
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-6 text-center sm:text-left">
+            <h3 className="font-serif text-2xl font-semibold text-white">Less guesswork.</h3>
             <p className="mt-2 text-sm text-[#A5A5C0]">
               Preserve the why behind every decision.
             </p>
           </div>
-          <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-6 text-center sm:text-left">
-            <h3 className="text-2xl font-bold text-white">Minutes, not months.</h3>
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-6 text-center sm:text-left">
+            <h3 className="font-serif text-2xl font-semibold text-white">Minutes, not months.</h3>
             <p className="mt-2 text-sm text-[#A5A5C0]">
               A faster start for the next person.
             </p>
           </div>
-          <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-6 text-center sm:text-left">
-            <h3 className="text-2xl font-bold text-white">Nothing left behind.</h3>
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-6 text-center sm:text-left">
+            <h3 className="font-serif text-2xl font-semibold text-white">Nothing left behind.</h3>
             <p className="mt-2 text-sm text-[#A5A5C0]">
               Make the invisible knowledge visible.
             </p>
@@ -352,70 +337,59 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
+      {/* 8. FAQ (All Expanded, Static) */}
       <section className="mx-auto max-w-3xl px-6 py-16">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#A5A5C0]">
             A little more context
           </p>
-          <h2 className="mt-2 text-3xl font-bold">Questions, answered.</h2>
+          <h2 className="mt-2 font-serif text-3xl font-semibold">Questions, answered.</h2>
         </div>
 
-        <div className="mt-8 divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/[0.02]">
-          {FAQS.map((faq, i) => {
-            const isOpen = activeFaq === i;
-            return (
-              <div key={faq.q} className="p-5">
-                <button
-                  type="button"
-                  onClick={() => setActiveFaq(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between text-left text-sm font-semibold text-white"
-                >
-                  <span>{faq.q}</span>
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform duration-200 text-[#A5A5C0] ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <p className="mt-3 text-sm text-[#A5A5C0] leading-relaxed">
-                    {faq.a}
-                  </p>
-                )}
-              </div>
-            );
-          })}
+        <div className="mt-8 divide-y divide-white/10 rounded-xl border border-white/10 bg-white/[0.02]">
+          <div className="p-5">
+            <h3 className="text-sm font-semibold text-white">Do I need an account?</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+              Create an account, or use the one-click demo accounts.
+            </p>
+          </div>
+          <div className="p-5">
+            <h3 className="text-sm font-semibold text-white">Where is my knowledge saved?</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+              In your project&apos;s PostgreSQL database, only visible to members of that project.
+            </p>
+          </div>
+          <div className="p-5">
+            <h3 className="text-sm font-semibold text-white">Does it use live AI?</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#A5A5C0]">
+              Yes. Gemini extracts claims on the server. A human reviews and approves every claim before it is shared.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Bottom Callout Banner */}
-      <section className="px-6 py-20 text-center">
+      {/* 9. Closing Quote and Demo CTA */}
+      <section className="border-t border-white/10 px-6 py-16 text-center">
         <div className="mx-auto max-w-2xl">
           <p className="font-serif italic text-2xl text-[#E2E8F0] sm:text-3xl">
-            &ldquo;Good handovers are invisible. <br />
-            Bad ones are remembered forever.&rdquo;
-          </p>
-          <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-[#A5A5C0]">
-            Make your next chapter a good one.
+            &ldquo;Good handovers are invisible. Bad ones are remembered forever.&rdquo;
           </p>
           <div className="mt-6">
             <Link
               href="/dashboard"
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#6366F1] px-6 text-sm font-semibold text-white shadow-lg shadow-[#6366F1]/30 transition hover:bg-[#5558E6]"
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#6366F1] px-6 text-sm font-semibold text-white hover:bg-[#5558E6] focus-visible:outline-2 focus-visible:outline-[#6366F1]"
             >
-              Pass the baton &rarr;
+              Try the demo &rarr;
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 text-xs text-[#A5A5C0]">
-          <BatonLogo />
-          <p>Pass the work, not the confusion. &copy; 2026 Baton</p>
+      {/* 10. Footer */}
+      <footer className="border-t border-white/10 py-8">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-6 text-xs text-[#A5A5C0]">
+          <Logo />
+          <p>ByeByeBrain. Keep the knowledge. Pass the project. &copy; 2026</p>
         </div>
       </footer>
     </div>

@@ -54,8 +54,7 @@ export function DecisionList({ decisions }: { decisions: Decision[] }) {
             return (
               <li
                 key={d.id}
-                style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
-                className="hover-card animate-fade-in rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-sm"
+                className="static-hover-card rounded-xl border border-white/10 bg-white/[0.03] p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between">
                   <span className="rounded-md border border-[#6366F1]/30 bg-[#6366F1]/10 px-2.5 py-1 text-xs text-[#C4B5FD]">
