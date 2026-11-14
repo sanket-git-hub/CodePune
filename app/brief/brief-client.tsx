@@ -161,13 +161,13 @@ export function BriefClient() {
               </div>
 
               <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => window.print()}
+                <a
+                  href="/api/handover/export"
+                  download
                   className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-medium text-[#F4F4FA] hover:bg-white/10"
                 >
-                  <Download size={15} /> Export PDF
-                </button>
+                  <Download size={15} /> Download PDF
+                </a>
                 {!signedOff ? (
                   <button
                     type="button"

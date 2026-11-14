@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "author": "Karan",
+      "timestamp": "2026-03-15T10:30:00Z",
+      "text": "Staging deployment credentials rotated. Admin password was set to temporary secret_token = tok_live_000111222."
+    },
+    {
+      "author": "Meera",
+      "timestamp": "2026-03-15T11:00:00Z",
+      "text": "Audit logs retention decided to be 90 days. We should keep user authentication logs separate."
+    }
+  ]
+}

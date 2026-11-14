@@ -11,6 +11,7 @@ import {
   Send,
   ShieldAlert,
   Search,
+  MessageSquare,
   type LucideIcon,
 } from "lucide-react";
 
@@ -68,20 +69,28 @@ const ITEMS: Item[] = [
     ready: true,
   },
   {
+    label: "Ask Baton",
+    short: "Ask",
+    href: "/ask",
+    icon: MessageSquare,
+    ready: true,
+    minRoles: ["incoming", "reviewer", "admin", "leaver"],
+  },
+  {
+    label: "Leak test",
+    short: "Leak test",
+    href: "/leak-test",
+    icon: Search,
+    ready: true,
+    minRoles: ["admin", "reviewer"],
+  },
+  {
     label: "Audit",
     short: "Audit",
     href: "/risks",
     icon: ShieldAlert,
     ready: true,
     minRoles: ["admin"],
-  },
-  {
-    label: "Leak test",
-    short: "Leak test",
-    href: "/ask",
-    icon: Search,
-    ready: true,
-    minRoles: ["admin", "reviewer"],
   },
 ];
 

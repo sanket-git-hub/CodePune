@@ -1,0 +1,17 @@
+[
+  {
+    "user": "Aarav",
+    "ts": "1710234000",
+    "text": "Decision: We are choosing Stripe over Razorpay and PayU because of faster onboarding and clean APIs. API key is api_key = sk_test_FAKE999888777."
+  },
+  {
+    "user": "Riya",
+    "ts": "1710234120",
+    "text": "Agreed. Contact me at riya.lead@campuspay.test or +91 98765 43210 if any issues arise with the webhook receiver."
+  },
+  {
+    "user": "Priya",
+    "ts": "1710234300",
+    "text": "Noted. I will take over primary ownership of the payments integration once legal signs off the refund policy."
+  }
+]
