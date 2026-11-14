@@ -6,7 +6,7 @@ import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { pool } from "@/lib/db";
-import { authConfig } from "./auth.config";
+import { authConfig } from "../auth.config";
 import type { Role } from "@/types/next-auth";
 
 // Validate credentials schema
