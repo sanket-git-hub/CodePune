@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutGrid,
+  FolderKanban,
   Upload,
   FileCheck,
   CheckSquare,
@@ -30,6 +31,13 @@ const ITEMS: Item[] = [
     short: "Overview",
     href: "/dashboard",
     icon: LayoutGrid,
+    ready: true,
+  },
+  {
+    label: "Projects",
+    short: "Projects",
+    href: "/projects",
+    icon: FolderKanban,
     ready: true,
   },
   {

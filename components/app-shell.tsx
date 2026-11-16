@@ -41,9 +41,9 @@ function Logo() {
 export function AppShell({
   user,
   section,
-  projectName = "Campus Pay",
-  handover = { from: "Riya", to: "Arjun" },
-  isDemo = true,
+  projectName,
+  handover,
+  isDemo = false,
   children,
 }: {
   user: { name?: string | null; email?: string | null; role: string };
@@ -54,6 +54,8 @@ export function AppShell({
   children: ReactNode;
 }) {
   const display = user.name ?? user.email ?? "Signed in";
+  const activeProject = projectName ?? (isDemo ? "Campus Pay" : "Workspace");
+  const activeHandover = handover ?? (isDemo ? { from: "Riya", to: "Arjun" } : null);
 
   return (
     <div
@@ -66,12 +68,18 @@ export function AppShell({
         </div>
 
         {/* Project Card */}
-        <div className="mb-4 hidden rounded-xl border border-white/10 bg-white/[0.03] p-3 lg:block">
-          <p className="text-sm font-medium text-white">{projectName ?? "Workspace"}</p>
+        <Link
+          href="/projects"
+          className="mb-4 hidden rounded-xl border border-white/10 bg-white/[0.03] p-3 transition hover:border-[#6366F1]/50 hover:bg-white/[0.05] lg:block group"
+        >
+          <div className="flex items-center justify-between">
+            <p className="truncate text-sm font-medium text-white group-hover:text-[#C4B5FD]">{activeProject}</p>
+            <span className="text-[10px] font-semibold text-[#8B5CF6] group-hover:underline">Switch</span>
+          </div>
           <p className="mt-0.5 text-xs text-[#A5A5C0]">
             {isDemo ? "Campus Pay · Demo project" : "Project workspace"}
           </p>
-        </div>
+        </Link>
 
         {/* Nav with role filtering */}
         <SidebarNav userRole={user.role} />
@@ -93,19 +101,31 @@ export function AppShell({
         {/* Top Bar */}
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-3 border-b border-white/10 bg-[#0B0B14] px-4 md:px-8">
           <p className="truncate text-sm text-[#A5A5C0]">
-            {projectName ?? "ByeByeBrain"} <span className="mx-2 text-white/20">/</span>
+            {activeProject} <span className="mx-2 text-white/20">/</span>
             <span className="text-[#F4F4FA]">{section}</span>
           </p>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/10 hover:border-white/30"
+            >
+              <span>Projects</span>
+            </Link>
+            <Link
+              href="/projects/new"
+              className="inline-flex items-center gap-1 rounded-lg bg-[#6366F1] px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#4F46E5]"
+            >
+              <span>+ New</span>
+            </Link>
             {isDemo && (
               <span className="rounded-md border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2 py-0.5 text-xs font-medium text-[#F59E0B]">
                 Demo data
               </span>
             )}
-            {handover && (
+            {activeHandover && (
               <span className="hidden rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1 text-xs text-[#A5A5C0] sm:inline">
-                From: {handover.from} &rarr; To: {handover.to}
+                From: {activeHandover.from} &rarr; To: {activeHandover.to}
               </span>
             )}
             <LogoutButton />

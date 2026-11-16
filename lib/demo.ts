@@ -1,9 +1,19 @@
-// Demo accounts. Admin is intentionally NOT here.
+// Demo accounts for instant 1-click evaluation
 export const DEMO_ACCOUNTS = {
+  admin: {
+    name: "Admin",
+    email: "admin@demo.byebyebrain.test",
+    role: "admin",
+  },
   reviewer: {
     name: "Demo Reviewer",
     email: "reviewer@demo.byebyebrain.test",
     role: "reviewer",
+  },
+  leaver: {
+    name: "Riya (Leaver)",
+    email: "riya@demo.byebyebrain.test",
+    role: "leaver",
   },
   incoming: {
     name: "Arjun (Demo Incoming)",

@@ -40,16 +40,16 @@ export default async function LoginPage({
         {demoEnabled && (
           <form action={demoLoginAction} className="space-y-2">
             <p className="text-xs uppercase tracking-wide text-[#A5A5C0]">
-              Try the demo
+              Try the demo (Instant role switch)
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              {(["reviewer", "incoming", "outsider"] as const).map((r) => (
+            <div className="grid grid-cols-4 gap-2">
+              {(["admin", "reviewer", "leaver", "incoming"] as const).map((r) => (
                 <button
                   key={r}
                   type="submit"
                   name="role"
                   value={r}
-                  className="h-10 rounded-lg border border-white/10 text-xs capitalize text-[#F4F4FA] hover:bg-white/5"
+                  className="h-10 rounded-lg border border-white/10 text-xs font-medium capitalize text-[#F4F4FA] transition hover:bg-white/10 hover:border-[#6366F1]/50"
                 >
                   {r}
                 </button>

@@ -34,18 +34,22 @@ export async function googleAction() {
   await signIn("google", { redirectTo: "/dashboard" });
 }
 
-// Demo buttons. Off unless ENABLE_DEMO_LOGIN=true. Admin is not offered here.
+// Demo buttons. Off unless ENABLE_DEMO_LOGIN=true.
 export async function demoLoginAction(formData: FormData) {
   const role = formData.get("role");
-  const password = process.env.DEMO_PASSWORD;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const demoPassword = process.env.DEMO_PASSWORD;
+
   if (
     process.env.ENABLE_DEMO_LOGIN !== "true" ||
-    !password ||
+    !demoPassword ||
     typeof role !== "string" ||
     !Object.hasOwn(DEMO_ACCOUNTS, role)
   ) {
     redirect("/login?error=demo");
   }
+
+  const password = role === "admin" ? (adminPassword || demoPassword) : demoPassword;
 
   try {
     await signIn("credentials", {

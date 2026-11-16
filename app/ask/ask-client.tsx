@@ -12,7 +12,13 @@ const SUGGESTIONS = [
   "Who owns billing?",
 ];
 
-export function AskClient() {
+interface AskClientProps {
+  projectId?: string;
+  isDemo?: boolean;
+  projectName?: string;
+}
+
+export function AskClient({ projectId, isDemo = false, projectName = "Workspace" }: AskClientProps) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +34,7 @@ export function AskClient() {
     setCurrentQuestion(trimmed);
 
     try {
-      const res = await askQuestionAction(trimmed);
+      const res = await askQuestionAction(trimmed, projectId);
       if (!res.success) {
         setError(res.error || "Failed to process question");
         setResult(null);
@@ -60,13 +66,23 @@ export function AskClient() {
         </h1>
 
         <p className="mt-4 text-sm text-[#A5A5C0]">
-          Ask anything. Baton answers only from approved handover claims you are cleared to read.
+          {isDemo
+            ? "Ask anything. Baton answers from approved handover claims and project knowledge."
+            : `Ask anything about ${projectName}. Answers are synthesized from your verified claims and architecture context.`}
         </p>
       </div>
 
       {/* Suggested Prompts */}
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        {SUGGESTIONS.map((s) => (
+        {(isDemo
+          ? SUGGESTIONS
+          : [
+              `What are the key decisions in ${projectName}?`,
+              "What is currently blocked or needs attention?",
+              "What architecture patterns are used?",
+              "What should the incoming engineer tackle first?",
+            ]
+        ).map((s) => (
           <button
             key={s}
             type="button"

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, ShieldAlert, CheckCircle2, XCircle, Search, FileText, Loader2 } from "lucide-react";
+import { ShieldCheck, ShieldAlert, CheckCircle2, XCircle, Search, FileText, Loader2, Calendar } from "lucide-react";
 import { askQuestionAction } from "@/app/actions/ask-actions";
 import { testPdfExportLeak } from "@/app/actions/pdf-leak-actions";
+import { testOnboardingPlanLeak, type PlanLeakTestResult } from "@/app/actions/plan-leak-actions";
 
 type Marker = {
   name: string;
@@ -33,6 +34,24 @@ export function LeakTestClient({
     claimsCount: number;
     hiddenCount: number;
   } | null>(null);
+
+  const [planTesting, setPlanTesting] = useState(false);
+  const [planResult, setPlanResult] = useState<{
+    incoming: PlanLeakTestResult;
+    outsider: PlanLeakTestResult;
+  } | null>(null);
+
+  const runPlanLeakTest = async () => {
+    setPlanTesting(true);
+    try {
+      const res = await testOnboardingPlanLeak();
+      setPlanResult(res);
+    } catch {
+      setPlanResult(null);
+    } finally {
+      setPlanTesting(false);
+    }
+  };
 
   const runAskLeakTest = async () => {
     setTesting(true);
@@ -197,6 +216,75 @@ export function LeakTestClient({
                 <p className="mt-2 text-[#D1D1E6]"><strong className="text-white">Gemini Answer:</strong> {r.answer}</p>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Onboarding Plan Leak Test Section */}
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="text-base font-semibold text-white">Onboarding Plan Clearance & Marker Audit</h2>
+            <p className="mt-1 text-xs text-[#A5A5C0]">
+              Generates plans for incoming and outsider clearance levels, asserting that zero HR/Finance markers appear and 100% of claim_ids originate from the filtered set.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={runPlanLeakTest}
+            disabled={planTesting}
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#6366F1] px-4 text-xs font-semibold text-white hover:bg-[#5558E6] disabled:opacity-50"
+          >
+            {planTesting ? <Loader2 size={14} className="animate-spin" /> : <Calendar size={14} />}
+            Run Plan Leak Audit
+          </button>
+        </div>
+
+        {planResult && (
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {/* Incoming User Plan Test */}
+            <div className="rounded-lg border border-white/10 bg-[#0B0B14] p-4 text-xs">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                <span className="font-semibold text-white">Incoming Role Plan</span>
+                {planResult.incoming.passed ? (
+                  <span className="flex items-center gap-1 font-semibold text-[#34D399]">
+                    <CheckCircle2 size={14} /> PASS
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 font-semibold text-[#FB7185]">
+                    <XCircle size={14} /> FAIL
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-[#A5A5C0]">{planResult.incoming.summary}</p>
+              <div className="mt-3 space-y-1 text-[#A5A5C0]">
+                <div>HR Marker: <span className={planResult.incoming.leakedHr ? "text-[#FB7185] font-bold" : "text-[#34D399]"}>{planResult.incoming.leakedHr ? "LEAKED" : "CLEAN"}</span></div>
+                <div>Finance Marker: <span className={planResult.incoming.leakedFinance ? "text-[#FB7185] font-bold" : "text-[#34D399]"}>{planResult.incoming.leakedFinance ? "LEAKED" : "CLEAN"}</span></div>
+                <div>All Claim IDs Permitted: <span className={planResult.incoming.allClaimIdsPermitted ? "text-[#34D399]" : "text-[#FB7185]"}>{planResult.incoming.allClaimIdsPermitted ? "YES (100%)" : "NO"}</span></div>
+              </div>
+            </div>
+
+            {/* Outsider User Plan Test */}
+            <div className="rounded-lg border border-white/10 bg-[#0B0B14] p-4 text-xs">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                <span className="font-semibold text-white">Outsider Role Plan</span>
+                {planResult.outsider.passed ? (
+                  <span className="flex items-center gap-1 font-semibold text-[#34D399]">
+                    <CheckCircle2 size={14} /> PASS
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 font-semibold text-[#FB7185]">
+                    <XCircle size={14} /> FAIL
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-[#A5A5C0]">{planResult.outsider.summary}</p>
+              <div className="mt-3 space-y-1 text-[#A5A5C0]">
+                <div>HR Marker: <span className={planResult.outsider.leakedHr ? "text-[#FB7185] font-bold" : "text-[#34D399]"}>{planResult.outsider.leakedHr ? "LEAKED" : "CLEAN"}</span></div>
+                <div>Finance Marker: <span className={planResult.outsider.leakedFinance ? "text-[#FB7185] font-bold" : "text-[#34D399]"}>{planResult.outsider.leakedFinance ? "LEAKED" : "CLEAN"}</span></div>
+                <div>All Claim IDs Permitted: <span className={planResult.outsider.allClaimIdsPermitted ? "text-[#34D399]" : "text-[#FB7185]"}>{planResult.outsider.allClaimIdsPermitted ? "YES (100%)" : "NO"}</span></div>
+              </div>
+            </div>
           </div>
         )}
       </div>

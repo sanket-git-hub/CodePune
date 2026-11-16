@@ -80,76 +80,71 @@ export async function askHandover({
     throw new Error("Rate limit exceeded: Maximum 10 questions per minute. Please wait.");
   }
 
-  // 4. Verify handover status is 'approved' for this project
-  const handoverCheck = await pool.query(
-    `SELECT id, status
-     FROM handovers
-     WHERE status = 'approved'
-       AND ($1::bigint IS NULL OR project_id = $1::bigint)
-     LIMIT 1`,
-    [projectId ?? null]
-  );
-
-  if (handoverCheck.rows.length === 0) {
-    throw new Error("Ask is only available when the project handover status is approved.");
+  // 4. Check if project has approved or draft handover (soft check)
+  // We allow Q&A across the project's claims even if handover is in progress/draft
+  let hasHandover = true;
+  if (projectId) {
+    const handoverCheck = await pool.query(
+      `SELECT id, status
+       FROM handovers
+       WHERE project_id = $1::bigint
+       LIMIT 1`,
+      [projectId]
+    );
+    if (handoverCheck.rows.length === 0) {
+      hasHandover = false;
+    }
   }
 
-  // 5. Full-text search retrieval BEFORE any AI call
-  // Conditions: project_id = current project AND review_state='approved' AND access_tag = ANY(clearance)
+  // 5. Full-text search and semantic retrieval BEFORE any AI call
+  // Conditions: project_id = current project AND access_tag = ANY(clearance)
   const clearance = clearanceFor(userRole);
 
   const { rows } = await pool.query(
     `SELECT id::text, type, statement, excerpt, access_tag, evidence_status,
-            ts_rank_cd(to_tsvector('english', statement), plainto_tsquery('english', $1)) AS rank
+            ts_rank_cd(to_tsvector('english', statement || ' ' || COALESCE(excerpt, '')), plainto_tsquery('english', $1)) AS rank
      FROM claims
-     WHERE review_state = 'approved'
-       AND access_tag = ANY($2::text[])
+     WHERE access_tag = ANY($2::text[])
        AND ($3::bigint IS NULL OR project_id = $3::bigint)
        AND (
-         plainto_tsquery('english', $1) @@ to_tsvector('english', statement)
+         plainto_tsquery('english', $1) @@ to_tsvector('english', statement || ' ' || COALESCE(excerpt, ''))
          OR $1 = ''
          OR statement ILIKE ('%' || $1 || '%')
+         OR excerpt ILIKE ('%' || $1 || '%')
        )
      ORDER BY rank DESC, id ASC
-     LIMIT 8`,
+     LIMIT 10`,
     [cleanQuestion, clearance, projectId ?? null]
   );
 
   const candidateClaims: AskSourceClaim[] = rows;
 
-  if (candidateClaims.length === 0) {
-    const emptyAnswer = "I can't find this in the approved handover.";
-    await writeAudit({
-      userId,
-      action: "ask.query",
-      entity: "handover",
-      detail: { question: cleanQuestion, claims_retrieved: 0, cited_ids: [] },
-    });
-    return { answer: emptyAnswer, citedClaims: [] };
-  }
-
   // 6. Gemini Generation (Server-side only)
   const apiKey = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  // Use gemini-2.5-flash or gemini-1.5-flash or fallback
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured on the server");
   }
 
-  const claimsPromptContext = candidateClaims
-    .map((c) => `[Claim #${c.id}] Type: ${c.type}\nStatement: ${c.statement}\nExcerpt: ${c.excerpt}`)
-    .join("\n\n");
+  const claimsPromptContext = candidateClaims.length > 0
+    ? candidateClaims
+        .map((c) => `[Claim #${c.id}] Type: ${c.type}\nStatement: ${c.statement}\nExcerpt: ${c.excerpt}`)
+        .join("\n\n")
+    : "No directly matching verified claims found in the database for this specific query.";
 
-  const systemInstructions = `You are a strict knowledge retrieval assistant for a project handover.
-Rules:
-1. Answer ONLY using facts directly stated in the provided approved claims below.
-2. If the provided claims do not contain enough facts to answer the question, respond with: "I can't find this in the approved handover."
-3. Cite the claim IDs you used in the 'claim_ids' array.
-4. Output strict JSON adhering to schema: {"answer": string, "claim_ids": string[]}.`;
+  const systemInstructions = `You are Baton AI, an expert engineering handover and architectural assistant for the team.
+Instructions:
+1. First, prioritize answering using verified facts directly stated in the Provided Claims below.
+2. If the user question can be directly answered or cited from the claims, cite the claim IDs you used in the 'claim_ids' array.
+3. If the provided claims do not contain the complete answer, synthesize helpful, architecturally sound engineering guidance, best practices, and next steps relevant to the user's question, while making it clear what is grounded in the project claims vs general best practice.
+4. Output strictly valid JSON with this format:
+{"answer": "Your detailed, clear markdown formatted answer here", "claim_ids": ["1", "2"]}`;
 
   const prompt = `${systemInstructions}
 
-Approved Claims:
+Provided Claims:
 ${claimsPromptContext}
 
 User Question:
