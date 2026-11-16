@@ -34,10 +34,8 @@ export async function googleAction() {
   await signIn("google", { redirectTo: "/dashboard" });
 }
 
-// Demo buttons. Off unless ENABLE_DEMO_LOGIN=true.
-// Works with OR without DEMO_PASSWORD – if no password is set in env,
-// we sign in using the demo email directly (no bcrypt check path needed
-// because the seed script stores the password hash we can compare against).
+// Demo buttons – password-free, role-only login.
+// ENABLE_DEMO_LOGIN=true must be set in Vercel env vars.
 export async function demoLoginAction(formData: FormData) {
   const role = formData.get("role");
 
@@ -49,25 +47,16 @@ export async function demoLoginAction(formData: FormData) {
     redirect("/login?error=demo");
   }
 
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  const demoPassword = process.env.DEMO_PASSWORD;
-
-  // If no password env vars are set at all, we cannot sign in via credentials.
-  if (!demoPassword) {
-    redirect("/login?error=demo");
-  }
-
-  const password =
-    role === "admin" ? adminPassword || demoPassword : demoPassword;
+  const account = DEMO_ACCOUNTS[role as DemoKey];
 
   try {
-    await signIn("credentials", {
-      email: DEMO_ACCOUNTS[role as DemoKey].email,
-      password,
+    // Uses the dedicated "demo" provider – no password check, DB lookup only
+    await signIn("demo", {
+      email: account.email,
       redirectTo: "/dashboard",
     });
   } catch (e) {
     if (e instanceof AuthError) redirect("/login?error=demo");
-    throw e;
+    throw e; // next-auth redirects by throwing – let it propagate
   }
 }

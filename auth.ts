@@ -22,7 +22,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     // Reads AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET from the environment.
     Google,
+    // ── Standard email + password login ───────────────────────────────────
     Credentials({
+      id: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -42,6 +44,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user?.password_hash ?? DUMMY_HASH,
         );
         if (!user || !user.password_hash || !ok) return null;
+
+        return {
+          id: String(user.id),
+          name: user.name,
+          email: user.email,
+          role: user.role as Role,
+        };
+      },
+    }),
+    // ── Password-less demo login (role-only, no password needed) ──────────
+    Credentials({
+      id: "demo",
+      name: "Demo",
+      credentials: {
+        email: { label: "Demo email", type: "text" },
+      },
+      async authorize(raw) {
+        // Only works when the demo flag is on
+        if (process.env.ENABLE_DEMO_LOGIN !== "true") return null;
+
+        const email = typeof raw?.email === "string" ? raw.email.toLowerCase().trim() : "";
+        if (!email) return null;
+
+        // Fetch the seeded demo user by email – no password check
+        const { rows } = await pool.query(
+          "SELECT id, name, email, role FROM users WHERE email = $1",
+          [email],
+        );
+        const user = rows[0];
+        if (!user) return null;
 
         return {
           id: String(user.id),
