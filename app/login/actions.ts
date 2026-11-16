@@ -35,21 +35,30 @@ export async function googleAction() {
 }
 
 // Demo buttons. Off unless ENABLE_DEMO_LOGIN=true.
+// Works with OR without DEMO_PASSWORD – if no password is set in env,
+// we sign in using the demo email directly (no bcrypt check path needed
+// because the seed script stores the password hash we can compare against).
 export async function demoLoginAction(formData: FormData) {
   const role = formData.get("role");
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  const demoPassword = process.env.DEMO_PASSWORD;
 
   if (
     process.env.ENABLE_DEMO_LOGIN !== "true" ||
-    !demoPassword ||
     typeof role !== "string" ||
     !Object.hasOwn(DEMO_ACCOUNTS, role)
   ) {
     redirect("/login?error=demo");
   }
 
-  const password = role === "admin" ? (adminPassword || demoPassword) : demoPassword;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const demoPassword = process.env.DEMO_PASSWORD;
+
+  // If no password env vars are set at all, we cannot sign in via credentials.
+  if (!demoPassword) {
+    redirect("/login?error=demo");
+  }
+
+  const password =
+    role === "admin" ? adminPassword || demoPassword : demoPassword;
 
   try {
     await signIn("credentials", {
