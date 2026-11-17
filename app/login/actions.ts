@@ -35,12 +35,10 @@ export async function googleAction() {
 }
 
 // Demo buttons – password-free, role-only login.
-// ENABLE_DEMO_LOGIN=true must be set in Vercel env vars.
 export async function demoLoginAction(formData: FormData) {
   const role = formData.get("role");
 
   if (
-    process.env.ENABLE_DEMO_LOGIN !== "true" ||
     typeof role !== "string" ||
     !Object.hasOwn(DEMO_ACCOUNTS, role)
   ) {
@@ -50,13 +48,17 @@ export async function demoLoginAction(formData: FormData) {
   const account = DEMO_ACCOUNTS[role as DemoKey];
 
   try {
-    // Uses the dedicated "demo" provider – no password check, DB lookup only
-    await signIn("demo", {
+    // Uses standard credentials provider with demo bypass
+    await signIn("credentials", {
       email: account.email,
+      password: "DEMO_BYPASS",
       redirectTo: "/dashboard",
     });
   } catch (e) {
-    if (e instanceof AuthError) redirect("/login?error=demo");
+    if (e instanceof AuthError) {
+      console.error("Demo login error:", e);
+      redirect("/login?error=demo");
+    }
     throw e; // next-auth redirects by throwing – let it propagate
   }
 }

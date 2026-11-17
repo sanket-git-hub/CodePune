@@ -22,7 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     // Reads AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET from the environment.
     Google,
-    // ── Standard email + password login ───────────────────────────────────
+    // ── Single Credentials Provider (handles both standard password and demo bypass) ──
     Credentials({
       id: "credentials",
       credentials: {
@@ -30,12 +30,59 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(raw) {
-        const parsed = credentialsSchema.safeParse(raw);
+        const email = typeof raw?.email === "string" ? raw.email.trim().toLowerCase() : "";
+        const password = typeof raw?.password === "string" ? raw.password : "";
+        if (!email) return null;
+
+        // 1. Password-free bypass for demo accounts
+        const isDemo =
+          password === "DEMO_BYPASS" ||
+          email.endsWith("@demo.byebyebrain.test");
+
+        if (isDemo) {
+          let { rows } = await pool.query(
+            "SELECT id, name, email, role FROM users WHERE LOWER(email) = $1",
+            [email],
+          );
+          let user = rows[0];
+
+          // If the demo user isn't in DB yet, auto-provision so it never fails
+          if (!user) {
+            const prefix = email.split("@")[0].toLowerCase();
+            const demoRole = (
+              prefix === "riya" ? "leaver" :
+              prefix === "arjun" ? "incoming" :
+              ["admin", "reviewer", "leaver", "incoming", "outsider"].includes(prefix) ? prefix :
+              "incoming"
+            );
+            const demoName = demoRole.charAt(0).toUpperCase() + demoRole.slice(1);
+
+            const insertRes = await pool.query(
+              `INSERT INTO users (name, email, role)
+               VALUES ($1, $2, $3)
+               ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role
+               RETURNING id, name, email, role`,
+              [demoName, email, demoRole],
+            );
+            user = insertRes.rows[0];
+          }
+
+          if (user) {
+            return {
+              id: String(user.id),
+              name: user.name,
+              email: user.email,
+              role: user.role as Role,
+            };
+          }
+        }
+
+        // 2. Standard email + password login
+        const parsed = credentialsSchema.safeParse({ email, password });
         if (!parsed.success) return null;
-        const { email, password } = parsed.data;
 
         const { rows } = await pool.query(
-          "SELECT id, name, email, password_hash, role FROM users WHERE email = $1",
+          "SELECT id, name, email, password_hash, role FROM users WHERE LOWER(email) = $1",
           [email],
         );
         const user = rows[0];
@@ -44,36 +91,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user?.password_hash ?? DUMMY_HASH,
         );
         if (!user || !user.password_hash || !ok) return null;
-
-        return {
-          id: String(user.id),
-          name: user.name,
-          email: user.email,
-          role: user.role as Role,
-        };
-      },
-    }),
-    // ── Password-less demo login (role-only, no password needed) ──────────
-    Credentials({
-      id: "demo",
-      name: "Demo",
-      credentials: {
-        email: { label: "Demo email", type: "text" },
-      },
-      async authorize(raw) {
-        // Only works when the demo flag is on
-        if (process.env.ENABLE_DEMO_LOGIN !== "true") return null;
-
-        const email = typeof raw?.email === "string" ? raw.email.toLowerCase().trim() : "";
-        if (!email) return null;
-
-        // Fetch the seeded demo user by email – no password check
-        const { rows } = await pool.query(
-          "SELECT id, name, email, role FROM users WHERE email = $1",
-          [email],
-        );
-        const user = rows[0];
-        if (!user) return null;
 
         return {
           id: String(user.id),
